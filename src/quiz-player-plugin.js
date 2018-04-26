@@ -35,7 +35,7 @@ export default class QuizPlayerPlugin {
       this.queue.push(src);
       return this;
     }
-    // change iframe src
+    this._instance.load(src);
 
     return this;
   }
