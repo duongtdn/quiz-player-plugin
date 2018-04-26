@@ -2,7 +2,7 @@
 
 const QUIZ_API_SOURCE = 'http://localhost:3100/quiz_api';
 
-const TIMEOUT = 2000
+const TIMEOUT = 5000
 
 export default class QuizPlayerPlugin {
   constructor(events) {
