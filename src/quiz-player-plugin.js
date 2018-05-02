@@ -64,6 +64,10 @@ export default class QuizPlayerPlugin {
     this._clearTimeout()._fire('onLoaded');
   }
 
+  onFinished() {
+    this._fire('onFinished')
+  }
+
   _loadPluginScript() {
     const tag = document.createElement('script');
     tag.src = QUIZ_API_SOURCE;
@@ -76,7 +80,8 @@ export default class QuizPlayerPlugin {
     const player = new Quiz.Player('quiz-player', {
       events: {
         onReady: this.onReady.bind(this),
-        onLoaded: this.onLoaded.bind(this)
+        onLoaded: this.onLoaded.bind(this),
+        onFinished: this.onFinished.bind(this)
       }
     })
 
