@@ -68,6 +68,10 @@ export default class QuizPlayerPlugin {
     this._fire('onFinished')
   }
 
+  onResize(height) {
+    this._fire('onResize', height)
+  }
+
   _loadPluginScript() {
     const tag = document.createElement('script');
     tag.src = QUIZ_API_SOURCE;
@@ -81,7 +85,8 @@ export default class QuizPlayerPlugin {
       events: {
         onReady: this.onReady.bind(this),
         onLoaded: this.onLoaded.bind(this),
-        onFinished: this.onFinished.bind(this)
+        onFinished: this.onFinished.bind(this),
+        onResize: this.onResize.bind(this)
       }
     })
 
