@@ -1,6 +1,6 @@
 "use strict"
 
-const QUIZ_API_SOURCE = 'http://localhost:3100/quiz_api';
+const QUIZ_API_SOURCE = 'http://localhost:3200/quiz_api';
 
 const TIMEOUT = 5000
 
@@ -73,11 +73,25 @@ export default class QuizPlayerPlugin {
   }
 
   _loadPluginScript() {
+    if (this._checkIfScriptExist()) {
+      return this;
+    }
     const tag = document.createElement('script');
     tag.src = QUIZ_API_SOURCE;
     const body = document.getElementsByTagName('BODY')[0];
     body.appendChild(tag, body);
     return this;
+  }
+
+  _checkIfScriptExist() {
+    const el = document.getElementsByTagName('script');
+    for (let i = 0; i < el.length; i++) {
+      const e = el[i];
+      if (e.src === QUIZ_API_SOURCE) {
+        return true;
+      }
+    }
+    return false;
   }
 
   _createPlayer() {
