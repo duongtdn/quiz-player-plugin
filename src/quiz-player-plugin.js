@@ -1,7 +1,5 @@
 "use strict"
 
-const QUIZ_API_SOURCE = 'http://localhost:3200/quiz_api';
-
 const TIMEOUT = 5000
 
 export default class QuizPlayerPlugin {
@@ -77,7 +75,7 @@ export default class QuizPlayerPlugin {
       return this;
     }
     const tag = document.createElement('script');
-    tag.src = QUIZ_API_SOURCE;
+    tag.src = QuizPlayerPlugin.playerVars.apiSrc;
     const body = document.getElementsByTagName('BODY')[0];
     body.appendChild(tag, body);
     return this;
@@ -87,7 +85,7 @@ export default class QuizPlayerPlugin {
     const el = document.getElementsByTagName('script');
     for (let i = 0; i < el.length; i++) {
       const e = el[i];
-      if (e.src === QUIZ_API_SOURCE) {
+      if (e.src === QuizPlayerPlugin.playerVars.apiSrc) {
         return true;
       }
     }
@@ -96,6 +94,7 @@ export default class QuizPlayerPlugin {
 
   _createPlayer() {
     const player = new Quiz.Player('quiz-player', {
+      playerVars: QuizPlayerPlugin.playerVars,
       events: {
         onReady: this.onReady.bind(this),
         onLoaded: this.onLoaded.bind(this),
@@ -131,3 +130,8 @@ export default class QuizPlayerPlugin {
 
 QuizPlayerPlugin.playerName = 'QUIZ'
 QuizPlayerPlugin.version = '1.0.0'
+QuizPlayerPlugin.playerVars = {};
+
+QuizPlayerPlugin.setPlayerVars = (vars) => {
+  QuizPlayerPlugin.playerVars = vars;
+}
