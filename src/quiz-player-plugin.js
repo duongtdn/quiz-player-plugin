@@ -33,9 +33,10 @@ export default class QuizPlayerPlugin {
     return this
   }
 
-  finish() {
-    this.stop();
-    return this;
+  finish(next) {
+    this._fire('onFinished', next)
+    this.stop()
+    return this
   }
 
   on(event, handler) {
