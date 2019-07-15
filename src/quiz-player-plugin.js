@@ -5,43 +5,32 @@ const TIMEOUT = 5000
 export default class QuizPlayerPlugin {
   constructor(events) {
 
-    this.ready = false;
-    this._instance = null;
-    this.active = false;
-    this.timeout = false;
-    this.events = {...events};
+    this._events = {}
+    for (let name in events) {
+      this._events[name] = [events[name]]
+    }
 
-    this.queue = [];
+    this.timeout = false
+    this.active = false
 
   }
 
   init() {
     console.log('Quiz Player init')
-    /* load plugin script, then create new player when api is loaded */
-    this._loadPluginScript();
-    window.onQuizAPIReady = () => {
-      console.log('Loaded Quiz API');
-      this._clearTimeout();
-      this._instance = this._createPlayer();
-    }
   }
 
   load(src) {
-    this.active = true;
-    this._setTimeout(TIMEOUT);
-    if (!this.ready) {
-      this.queue.push(src);
-      return this;
-    }
-    this._instance.load(src);
-
-    return this;
+    this.active = true
+    this._setTimeout(TIMEOUT)
+    this._get(src).then( data => {
+      this._clearTimeout()._fire('onLoaded', { problem: data })
+    }).catch(err => console.log(`Error: ${err}`))
+    return this
   }
 
   stop() {
-    this.active = false;
-    // this.ready &&  this._instance && this._instance.stop();
-    return this;
+    this.active = false
+    return this
   }
 
   finish() {
@@ -49,66 +38,15 @@ export default class QuizPlayerPlugin {
     return this;
   }
 
-  onReady() {
-    this.ready = true;
-    this._clearTimeout();
-    if (this.active && this.queue.length > 0) { // only load when active
-      const src = this.queue.pop();
-      this.load(src);
-    }
-  }
-
-  onLoaded() {
-    this._clearTimeout()._fire('onLoaded');
-  }
-
-  onFinished() {
-    this._fire('onFinished')
-  }
-
-  onResize(height) {
-    this._fire('onResize', height)
-  }
-
-  _loadPluginScript() {
-    if (this._checkIfScriptExist()) {
-      return this;
-    }
-    const tag = document.createElement('script');
-    tag.src = QuizPlayerPlugin.playerVars.apiSrc;
-    const body = document.getElementsByTagName('BODY')[0];
-    body.appendChild(tag, body);
-    return this;
-  }
-
-  _checkIfScriptExist() {
-    const el = document.getElementsByTagName('script');
-    for (let i = 0; i < el.length; i++) {
-      const e = el[i];
-      if (e.src === QuizPlayerPlugin.playerVars.apiSrc) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  _createPlayer() {
-    const player = new Quiz.Player('quiz-player', {
-      playerVars: QuizPlayerPlugin.playerVars,
-      events: {
-        onReady: this.onReady.bind(this),
-        onLoaded: this.onLoaded.bind(this),
-        onFinished: this.onFinished.bind(this),
-        onResize: this.onResize.bind(this)
-      }
-    })
-
-    return player;
+  on(event, handler) {
+    this._events && this._events[event].push(handler)
   }
 
   _fire(event, ...args) {
     /* only fire event when active */    
-    this.active && this.events[event] && this.events[event](...args);
+    if (this.active && this._events[event]) {
+      this._events[event].forEach(handler => handler(...args) )
+    }
     return this;
   }
 
@@ -126,11 +64,28 @@ export default class QuizPlayerPlugin {
     return this;
   }
 
+  _get(src) {
+    return new Promise((resolve, reject) => {
+      const urlBasePath = QuizPlayerPlugin.playerVars.urlBasePath
+      const request  = new XMLHttpRequest()
+      request .addEventListener('load', () => {
+        if (request.status == 200) {
+          resolve(request.responseText)
+        } else {
+          reject(request.status)
+        }
+      })
+      request .open("GET", `${urlBasePath}/${src}`, true)
+      request .send()
+    })
+  }
+
 }
 
 QuizPlayerPlugin.playerName = 'QUIZ'
-QuizPlayerPlugin.version = '1.0.0'
-QuizPlayerPlugin.playerVars = {};
+QuizPlayerPlugin.version = '2.0.0'
+QuizPlayerPlugin.playerVars = {}
+QuizPlayerPlugin.media = false
 
 QuizPlayerPlugin.setPlayerVars = (vars) => {
   QuizPlayerPlugin.playerVars = vars;
