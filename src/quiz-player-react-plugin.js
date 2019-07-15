@@ -31,15 +31,17 @@ class QuizReactComponent extends Component {
     this.state = {
       data: null,
       index: 0,
-      submitted: [],
-      answers: [],
-      checks:[]
     }
+
+    this.submitted = []
+    this.answers = []
+    this.checks = []
+
     this.props.player && this.props.player.on('onLoaded', data => {
-      const submitted = data.data.map( quiz => false )
-      const answers = data.data.map( quiz => {} )
-      const checks = data.data.map( quiz => {} )
-      this.setState({ data: data.data, submitted, answers, checks, index: 0 })
+      this.submitted = data.data.map( quiz => false )
+      this.answers = data.data.map( quiz => {} )
+      this.checks = data.data.map( quiz => {} )
+      this.setState({ data: data.data, index: 0 })
     })
     this.submit = this.submit.bind(this)
     this.finish = this.finish.bind(this)
@@ -59,7 +61,7 @@ class QuizReactComponent extends Component {
             <span className={quizzes.length === 1 ? 'w3-hide': ''} style={{position: 'absolute', top: 0, right: 0}}>
               {
                 quizzes.map( (quiz,index) => {
-                  const color = this.state.submitted[index]? 'blue' : 'grey'
+                  const color = this.submitted[index]? 'blue' : 'grey'
                   return (
                     <CircleTag key={index} value={index} color={color} onClick={ () => this.setState({ index })} />
                   )
@@ -95,9 +97,8 @@ class QuizReactComponent extends Component {
         // end of quizzes
         this.finish()
       } else {
-        const submitted = [...this.state.submitted]
-        submitted.splice(this.state.index, 1, true)
-        this.setState({ submitted, index: this.state.index + 1 })
+        this.submitted.splice(this.state.index, 1, true)
+        this.setState({ index: this.state.index + 1 })
       }
     } else {
       console.log(check?'Correct':'Incorrect')
@@ -111,21 +112,19 @@ class QuizReactComponent extends Component {
 
   updateAnswers(answer) {
     const index = this.state.index
-    const answers = [...this.state.answers]
-    answers.splice(index, 1, answer)
-    this.setState({ answers })
+    this.answers.splice(index, 1, answer)
   }
 
   getSavedAnswers() {
-    return this.state.answers[this.state.index]
+    return this.answers[this.state.index]
   }
 
   checkAnswer() {
     const quizzes = this.state.data
     const index = this.state.index
     const quiz = quizzes[index]
-    const userAnswer = this.state.answers[index]
-    const checks = [...this.state.checks]
+    const userAnswer = this.answers[index]
+    const checks = this.checks
     const check = {}
     for (let key in quiz.answer) {
       if (userAnswer && userAnswer[key] !== undefined && userAnswer[key] !== null && userAnswer[key] === quiz.answer[key]) {
@@ -134,8 +133,7 @@ class QuizReactComponent extends Component {
         check[key] = false
       }
     }
-    checks.splice(index, 1, check)
-    this.setState({ checks })
+    this.checks.splice(index, 1, check)
     return Object.keys(check).every( key => check[key] )
   }
 
