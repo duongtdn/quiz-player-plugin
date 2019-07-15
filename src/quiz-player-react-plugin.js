@@ -29,26 +29,34 @@ class QuizReactComponent extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: null
+      data: null,
+      index: 0
     }
-    this.props.player && this.props.player.on('onLoaded', data => this.setState({ data }))
+    this.props.player && this.props.player.on('onLoaded', data => this.setState({ data: data.data }))
   }
 
   render() {
     console.log(this.state.data)
-    if (this.state.data) {
+    if (this.state.data && this.state.data.length > 0) {
+      const quizzes = this.state.data
+      const quiz = quizzes[this.state.index]
       return (
         <div id = "quiz-player" className="embed-player">
           <header className="w3-border-bottom" style={{padding: '8px 0', position: 'relative'}}>
-            <span> Quiz 1 </span>
-            <span style={{position: 'absolute', top: 0, right: 0}}>
-              <CircleTag value={0} />
-              <CircleTag value={1} color='grey' />
-              <CircleTag value={2} color='grey' />
+            <span> Quiz {this.state.index+1} </span>
+            <span className={quizzes.length === 1 ? 'w3-hide': ''} style={{position: 'absolute', top: 0, right: 0}}>
+              {
+                quizzes.map( (quiz,index) => {
+                  const color = 'grey'
+                  return (
+                    <CircleTag key={index} value={index} color={color} />
+                  )
+                })
+              }
             </span>
           </header>
           <div className="">
-            <Quiz data={this.state.data}
+            <Quiz data={quiz}
                   addons={addons}
                   updateAnswers = {this.props.updateAnswers}
                   getSavedAnswers = {this.props.getSavedAnswers}

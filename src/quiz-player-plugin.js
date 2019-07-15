@@ -23,7 +23,7 @@ export default class QuizPlayerPlugin {
     this.active = true
     this._setTimeout(TIMEOUT)
     this._get(src).then( data => {
-      this._clearTimeout()._fire('onLoaded', { problem: data })
+      this._clearTimeout()._fire('onLoaded', { data: JSON.parse(data) })
     }).catch(err => console.log(`Error: ${err}`))
     return this
   }
