@@ -37,11 +37,13 @@ class QuizReactComponent extends Component {
     this.submitted = []
     this.answers = []
     this.checks = []
+    this.quizStates = []
 
     this.props.player && this.props.player.on('onLoaded', data => {
       this.submitted = data.data.map( quiz => false )
       this.answers = data.data.map( quiz => {} )
       this.checks = data.data.map( quiz => {} )
+      this.quizStates = data.data.map( quiz => {} )
       this.setState({ data: data.data, index: 0, showSummary: false })
     })
     this.submit = this.submit.bind(this)
@@ -49,6 +51,8 @@ class QuizReactComponent extends Component {
     this.checkAnswer = this.checkAnswer.bind(this)
     this.updateAnswers = this.updateAnswers.bind(this)
     this.getSavedAnswers = this.getSavedAnswers.bind(this)
+    this.updateInternalState = this.updateInternalState.bind(this)
+    this.getSavedInternalState = this.getSavedInternalState.bind(this)
   }
 
   render() {
@@ -86,8 +90,8 @@ class QuizReactComponent extends Component {
                 addons={addons}
                 updateAnswers = {this.updateAnswers}
                 getSavedAnswers = {this.getSavedAnswers}
-                updateInternalState = {this.props.updateInternalState}
-                getSavedInternalState = {this.props.getSavedInternalState}
+                updateInternalState = {this.updateInternalState}
+                getSavedInternalState = {this.getSavedInternalState}
           />
         </div>
         <div className="w3-border-bottom" style={{marginTop: '32px', padding: '16px 0'}}>
@@ -192,6 +196,15 @@ class QuizReactComponent extends Component {
     }
     this.checks.splice(index, 1, check)
     return Object.keys(check).every( key => check[key] )
+  }
+
+  updateInternalState(state) {
+    const index = this.state.index
+    this.quizStates.splice(index, 1, state)
+  }
+
+  getSavedInternalState() {
+    return this.quizStates[this.state.index]
   }
 
   finish(next) {
