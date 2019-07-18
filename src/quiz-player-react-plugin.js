@@ -175,11 +175,19 @@ class QuizReactComponent extends Component {
     const userAnswer = this.answers[index]
     const check = {}
     for (let key in quiz.answer) {
-      // cannot compare object, need to rework
-      if (userAnswer && userAnswer[key] !== undefined && userAnswer[key] !== null && userAnswer[key] == quiz.answer[key]) {
-        check[key] = true
-      } else {
-        check[key] = false
+      check[key] = false
+      if (userAnswer && userAnswer[key] !== undefined && userAnswer[key] !== null) {
+        if (typeof quiz.answer[key] === 'object') {
+          check[key] = true
+          for (let id in quiz.answer[key]) {
+            if (!(userAnswer[key][id] && userAnswer[key][id] == quiz.answer[key][id])) {
+              check[key] = false
+              break
+            }
+          }
+        } else {
+          check[key] = userAnswer[key] == quiz.answer[key]
+        }
       }
     }
     this.checks.splice(index, 1, check)
