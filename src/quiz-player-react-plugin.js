@@ -42,7 +42,7 @@ class QuizReactComponent extends Component {
       this.submitted = data.data.map( quiz => false )
       this.answers = data.data.map( quiz => {} )
       this.checks = data.data.map( quiz => {} )
-      this.setState({ data: data.data, index: 0 })
+      this.setState({ data: data.data, index: 0, showSummary: false })
     })
     this.submit = this.submit.bind(this)
     this.finish = this.finish.bind(this)
