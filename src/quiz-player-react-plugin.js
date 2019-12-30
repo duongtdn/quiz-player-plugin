@@ -5,8 +5,8 @@ import React, { Component } from 'react'
 import QuizPlayerPlugin from './quiz-player-plugin'
 import { bindRender } from 'content-presenter'
 
-import Quiz from 'react-quiz'
-import addons from 'react-quiz/dist/addons'
+import Quiz from '@elearn/react-quiz'
+import addons from '@elearn/react-quiz/dist/addons'
 
 class CircleTag extends Component {
   constructor(props) {

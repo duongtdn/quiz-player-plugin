@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/duongtdn/quiz-player-plugin#readme",
   "dependencies": {
+    "@elearn/react-quiz": "^1.0.0",
     "content-presenter": "^3.1.1"
   },
   "peerDependencies": {
