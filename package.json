@@ -1,5 +1,5 @@
 {
-  "name": "quiz-player-plugin",
+  "name": "@elearn/quiz-player-plugin",
   "version": "2.0.0",
   "description": "Plugin to play quiz in learndesk-web",
   "main": "index.js",
@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/duongtdn/quiz-player-plugin#readme",
   "dependencies": {
-    "content-presenter": "^3.0.0"
+    "content-presenter": "^3.1.1"
   },
   "peerDependencies": {
     "react": "^15.4.0",
