@@ -1,6 +1,6 @@
 {
   "name": "@elearn/quiz-player-plugin",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Plugin to play quiz in learndesk-web",
   "main": "index.js",
   "scripts": {
